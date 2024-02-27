@@ -21,4 +21,4 @@ jobs:
         name: parse strategy.json
         run: |
           TASKS=$(echo $(cat ${{ inputs.strategy-file }}) | sed 's/ //g' )
-          echo "::set-output name=strategy::$TASKS"
+          echo "strategy=${TASKS}" >> ${GITHUB_OUTPUT}
