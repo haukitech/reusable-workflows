@@ -3,7 +3,7 @@ name: Reusable strategy
 on:
   workflow_call:
     inputs:
-      strategy-file:
+      strategy_file:
         type: string
         required: false
         default: .github/workflows/strategy.json
@@ -20,5 +20,5 @@ jobs:
       - id: set-strategy
         name: parse strategy.json
         run: |
-          TASKS=$(echo $(cat ${{ inputs.strategy-file }}) | sed 's/ //g' )
+          TASKS=$(echo $(cat ${{ inputs.strategy_file }}) | sed 's/ //g' )
           echo "strategy=${TASKS}" >> ${GITHUB_OUTPUT}
