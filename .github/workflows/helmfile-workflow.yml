@@ -1,0 +1,68 @@
+---
+name: Helmfile workflow
+on:
+  workflow_call:
+    inputs:
+      aws_region:
+        required: true
+        type: string
+      iam_role_arn:
+        required: true
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      helm_action:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      helmfile_version:
+        required: false
+        type: string
+        default: v0.158.0
+      helm_version:
+        required: false
+        type: string
+        default: v3.13.1
+      sops_version:
+        required: false
+        type: string
+        default: 3.8.1
+permissions:
+  pull-requests: write
+  contents: read
+  id-token: write
+env:
+  AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
+jobs:
+  helmfile_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mdgreenwald/mozilla-sops-action@v1.5.0
+        with:
+          version: ${{ inputs.sops_version }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ${{ inputs.aws_region }}
+          role-to-assume: ${{ inputs.iam_role_arn }}
+      - run: aws eks update-kubeconfig --name ${{ inputs.cluster_name }}
+      - uses: helmfile/helmfile-action@v1.7.0
+        id: helmfile-diff
+        with:
+          helmfile-version: ${{ inputs.helmfile_version }}
+          helm-version: ${{ inputs.helm_version }}
+          helmfile-args: -e ${{ inputs.environment }} ${{ inputs.helm_action }}
+          helm-plugins: >-
+            https://github.com/databus23/helm-diff,
+            https://github.com/jkroepke/helm-secrets
+      - uses: kamu-data/helm-diff-comment@v1.4.0
+        if: ${{ inputs.helm_action }} == diff || ${{ inputs.helm_action }} == apply
+        with:
+          helm-output: |
+            ${{ steps.helmfile-diff.outputs.helmfile-stdout }}
+          environment-name: ${{ inputs.environment }}
+          helm-action: diff
