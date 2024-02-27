@@ -88,7 +88,7 @@ jobs:
     uses: kamu-data/reusable-workflows/.github/workflows/reusable-strategy.yml@master
   
   verify:
-    needs: strategy
+    needs: [ strategy ]
     strategy: ${{ fromJson(needs.strategy.outputs.strategy) }}
     run: echo ${{ matrix.my_variable }}
 ```
