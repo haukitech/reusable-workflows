@@ -1,0 +1,24 @@
+---
+name: Reusable strategy
+on:
+  workflow_call:
+    inputs:
+      strategy-file:
+        type: string
+        required: false
+        default: .github/workflows/strategy.json
+    outputs:
+      strategy:
+        value: ${{ jobs.strategy.outputs.strategy }}
+jobs:
+  strategy:
+    runs-on: ubuntu-latest
+    outputs:
+      strategy: ${{ steps.set-strategy.outputs.strategy }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-strategy
+        name: parse strategy.json
+        run: |
+          TASKS=$(echo $(cat ${{ inputs.strategy-file }}) | sed 's/ //g' )
+          echo "::set-output name=strategy::$TASKS"
