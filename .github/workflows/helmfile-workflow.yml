@@ -59,7 +59,7 @@ jobs:
           helm-plugins: >-
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
-      - uses: kamu-data/helm-diff-comment@v1.4.0
+      - uses: kamu-data/helm-diff-comment@v1.5.0
         if: ${{ inputs.helm_action == 'diff' || inputs.helm_action == 'apply' }}
         with:
           helm-output: |
