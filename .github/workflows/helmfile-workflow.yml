@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: mdgreenwald/mozilla-sops-action@v1.5.0
+      - uses: mdgreenwald/mozilla-sops-action@v1.6.0
         with:
           version: ${{ inputs.sops_version }}
       - uses: aws-actions/configure-aws-credentials@v4
