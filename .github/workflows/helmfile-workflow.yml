@@ -21,11 +21,11 @@ on:
       helmfile_version:
         required: false
         type: string
-        default: v0.158.0
+        default: v0.171.0
       helm_version:
         required: false
         type: string
-        default: v3.13.1
+        default: v3.17.1
       sops_version:
         required: false
         type: string
@@ -50,7 +50,7 @@ jobs:
           aws-region: ${{ inputs.aws_region }}
           role-to-assume: ${{ inputs.iam_role_arn }}
       - run: aws eks update-kubeconfig --name ${{ inputs.cluster_name }}
-      - uses: helmfile/helmfile-action@v1.7.0
+      - uses: helmfile/helmfile-action@v2.0.4
         id: helmfile-diff
         with:
           helmfile-version: ${{ inputs.helmfile_version }}
